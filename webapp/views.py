@@ -4,9 +4,21 @@ from .forms import *
 from django.views.generic import CreateView, FormView, ListView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,login,logout
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
+def signin_required(fn):
+    def wrapper(request,*args,**kw):
+        if not request.user.is_authenticated:
+            messages.error(request,"You must login first")
+            return redirect("signin")
+        else:
+            return fn(request,*args,**kw)
+    return wrapper
+
+decs=[signin_required,never_cache]
 
 class UserReigtrationView(CreateView):
     template_name = 'register.html'
@@ -32,11 +44,13 @@ class LoginView(FormView):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user:
+                login(request,user)
                 return redirect("home")
             else:
                 messages.error(request, "Your credentials not matching, try again")
                 return render(request, "login.html", {'form':form})
 
+@method_decorator(decs,name="dispatch")
 class IndexView(CreateView, ListView):
     template_name = "index.html"
     form_class = PostForm
@@ -47,25 +61,53 @@ class IndexView(CreateView, ListView):
 
 
     def form_valid(self, form):
-        form.instance.user=self.request.user
-        messages.success(self.request,"your post added successfully")
-        return super().form_valid(form)
+        if form.is_valid():
+            form.instance.user=self.request.user
+            messages.success(self.request, "New post has been uploaded")
+            return super().form_valid(form)
+        else:
+            messages.error(self.request, "uploading failed")
+            return render(self.request, "index.html", {"form":form})
+
+    def get_queryset(self):
+        return Posts.objects.exclude(user=self.request.user).order_by("-created_date")
+decs   
+def add_comment(request, *args, **kwargs):
+        id = kwargs.get('id')
+        cmt = request.POST.get('comment')
+        qs = Posts.objects.get(id=id)
+        qs.comments_set.create(user=request.user, comment=cmt)
+        messages.success(request, "Comment added succesfully")
+        return redirect("home")
 
 
+        
+    # i
+    
+    
 
-
-
-
-
-    # def get_queryset(self):
-
-    #     return Posts.objects.exclude(user=self.request.user).order_by("-created_date")
-
-
-
+    # Answers.objects.create(questions=ques,
+    #     answers=ans,
+    #     user=request.user)
+    # messages.success(request,"your answer posted successfully")
+    # return redirect("home")
+decs
+def like_post(request, *args, **kwargs):
+        id = kwargs.get('id')
+        ps = Posts.objects.get(id=id)
+        if ps.like.contains(request.user):
+            ps.like.remove(request.user)
+        else:
+            ps.like.add(request.user)
+        return redirect("home")
+decs
 def add_comment(request,*args,**kw):
     id=kw.get("id")
     pos=Posts.objects.get(id=id)
     com=request.POST.get("comment")
     Comments.objects.create(posts=pos,comments=com,user=request.user)
     return redirect("home")
+
+def sign_out_view(request,*args,**kw):
+    logout(request)
+    return redirect("sign-in")

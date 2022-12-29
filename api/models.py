@@ -17,6 +17,13 @@ class Posts(models.Model):
     def likes(self):
         return self.like.all().count()
 
+    @property
+    def imageURL(self):
+        if self.image:
+            return self.image.url
+        else:
+            return ""
+
     def __str__(self):
         return self.title
 
@@ -26,3 +33,8 @@ class Comments(models.Model):
     post = models.ForeignKey(Posts, on_delete=models.CASCADE)
     comment = models.CharField(max_length=200)
     created_date = models.DateField(auto_now_add=True)
+
+class Friends(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
+    date = models.DateTimeField(auto_now_add=True)
