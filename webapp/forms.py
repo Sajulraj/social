@@ -38,6 +38,6 @@ class PostForm(forms.ModelForm):
         ]
 
         widgets = {
-            'title':forms.TextInput(attrs={"class":"form-control"}),
+            'title':forms.Textarea(attrs={"class":"form-control"}),
             'image':forms.FileInput(attrs={"class":"form-control"}),
         }

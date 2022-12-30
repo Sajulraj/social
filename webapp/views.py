@@ -80,17 +80,6 @@ def add_comment(request, *args, **kwargs):
         messages.success(request, "Comment added succesfully")
         return redirect("home")
 
-
-        
-    # i
-    
-    
-
-    # Answers.objects.create(questions=ques,
-    #     answers=ans,
-    #     user=request.user)
-    # messages.success(request,"your answer posted successfully")
-    # return redirect("home")
 decs
 def like_post(request, *args, **kwargs):
         id = kwargs.get('id')
@@ -100,13 +89,7 @@ def like_post(request, *args, **kwargs):
         else:
             ps.like.add(request.user)
         return redirect("home")
-decs
-def add_comment(request,*args,**kw):
-    id=kw.get("id")
-    pos=Posts.objects.get(id=id)
-    com=request.POST.get("comment")
-    Comments.objects.create(posts=pos,comments=com,user=request.user)
-    return redirect("home")
+
 
 def sign_out_view(request,*args,**kw):
     logout(request)
