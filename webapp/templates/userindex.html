@@ -10,6 +10,7 @@
                     <img src="https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg" alt="">
                     <div>
                         <p style="font-size: large;">{{user}}</p>
+                        <a href="#">edit your promise</a>
                         <span>{{created_date}}</span>
                     </div>
                 </div>
@@ -57,6 +58,7 @@
                 <hr class="my-4" />
                 <!-- endlike -->
                 <!-- cmnt list -->
+              
                 {%for cmnts in p.comment%}
                 <div class="row">
                     <div class="col-6">
@@ -70,7 +72,9 @@
                     </div>
                     <div class="col-3">
                     </div>
-                    <div class="col-3"></div>
+                    <div class="col-3">
+                        <button class="btn btn-outline-danger" style="margin-top: 30%;margin-bottom: 10px; border-radius: 50%;">Delete</button>
+                    </div>
                 </div>
                 {%endfor%}
                 <!-- endlist -->

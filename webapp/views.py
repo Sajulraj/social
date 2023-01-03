@@ -111,6 +111,8 @@ def like_post(request, *args, **kwargs):
             ps.like.add(request.user)
         return redirect("home")
 
+
+@method_decorator(decs,name="dispatch")
 class AddProfileView(CreateView):
     template_name="userindex.html"
     form_class=ProfileForm
@@ -126,9 +128,12 @@ class AddProfileView(CreateView):
         else:
             return render(request,"userprofile.html",{"form":form})
 
+@method_decorator(decs,name="dispatch")
 class ViewmyProfile(TemplateView):
     template_name="userindex.html"
 
+
+@method_decorator(decs,name="dispatch")
 class ListPeopleView(ListView):
     template_name="people/peoples.html"
     model = User
@@ -143,7 +148,7 @@ class ListPeopleView(ListView):
     def get_queryset(self):
         return User.objects.exclude(username=self.request.user)
 
-
+decs
 def add_follower(request, *args, **kwargs):
     id = kwargs.get('id')
     usr = User.objects.get(id=id)
@@ -153,6 +158,12 @@ def add_follower(request, *args, **kwargs):
         Friends.objects.get(user=usr, follower=request.user).delete()
     return redirect("people")
 
+
+decs
+def comment_delete(request,*args,**kw):
+    id=kw.get("id")
+    Comments.objects.get(id=id).delete()
+    return redirect("home")
 
 def sign_out_view(request,*args,**kw):
     logout(request)
