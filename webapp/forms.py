@@ -41,3 +41,8 @@ class PostForm(forms.ModelForm):
             'title':forms.Textarea(attrs={"class":"form-control"}),
             'image':forms.FileInput(attrs={"class":"form-control"}),
         }
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+        model= UserProfile
+        fields=["profile_pic","dateofbirth","place","bio"]

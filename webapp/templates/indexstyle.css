@@ -88,13 +88,17 @@ nav{
 }
 .right-sidebar{
     background: #fff;
-    flex-basis: 25%;
+    flex-basis: 35%;
     position: sticky;
     top: 70px;
     align-self: flex-start;
     padding: 20px;
     border-radius: 4px;
     color: #626262;
+}
+.right-sidebar.card-parent.card-child{
+    display: flex;
+   margin-top: 5px;
 }
 .main-content{
     flex-basis: 50%;
@@ -346,4 +350,9 @@ font-size: 14px;
 .post-title{
     font-weight: 600;
     font-size: 16px; 
+}
+
+.comment-icon{
+    width: 20%;
+    height: 100px;
 }

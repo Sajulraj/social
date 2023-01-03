@@ -1,0 +1,91 @@
+{%extends 'base.html'%}
+{%block body_block%}
+
+        <!-- maincontent starts-->
+        <div class="main-content">
+
+             <!-- postlist -->
+             <div class="post-container" style="margin-top: 15px;">
+                <div class="user-profile">
+                    <img src="https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg" alt="">
+                    <div>
+                        <p style="font-size: large;">{{user}}</p>
+                        <span>{{created_date}}</span>
+                    </div>
+                </div>
+                
+            </div>
+        
+        <!-- ends -->
+
+        <!-- list post -->
+            <div class="main-content" style="width: 540px; margin-top: 25px;">
+                {%for p in posts%}
+                <div class="" style="margin-top: 25px;">
+                    <!-- Post preview-->
+                    <div class="post-preview">
+                        
+                            <h2 class="post-title">{{p.title}}</h2>
+                        
+                        <p class="">
+                            <i class="fa-solid fa-user"></i>
+                            {{p.user}}
+                            <i class="fa-solid fa-calendar-days"></i> {{p.created_date}}
+                        </p>
+                        {%if p.image%}
+                        <div>
+                            <img src="{{p.image.url}}" alt="" class="w-100">
+                        </div>
+                        {%endif%}
+                    </div>
+                </div>
+           
+
+
+                <!-- addlike -->
+
+
+                <div class="mt-2">
+                    <a href="{%url 'like-post' p.id %}" class="btn btn-warning btn-sm"><i
+                            class="fa-regular fa-heart"></i></a>
+                    
+                    {{p.likes}} <i class="fa-solid fa-heart"></i> {{user}} & others
+                    
+                   
+                </div>
+
+                <hr class="my-4" />
+                <!-- endlike -->
+                <!-- cmnt list -->
+                {%for cmnts in p.comment%}
+                <div class="row">
+                    <div class="col-6">
+                        <p class="post-meta">
+                            <div class=" fw-bold">{{cmnts.comment}}</div>
+                            <div class="fw-light"> <i class="fa-solid fa-user"></i><a href="#!"> {{p.user}}</a>
+                             <i class="fa-solid fa-calendar-days"></i> {{p.created_date}}</div>
+                             
+                         </p>
+                         
+                    </div>
+                    <div class="col-3">
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+                {%endfor%}
+                <!-- endlist -->
+                <!-- cmnt -->
+                <div>
+                    <form action="{%url 'add_comment' p.id %}" method="post">
+                        {%csrf_token%}
+                        <input type="text" placeholder="Add comment" name="comment" class="form-control">
+                        <button type="submit" class="btn btn-outline-info">Add</button>
+                    </form>
+                </div>
+                {%endfor%}
+                <hr class="my-4" />
+            </div>
+            </div>
+     </div>
+
+     {%endblock%}

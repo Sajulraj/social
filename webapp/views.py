@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from api.models import *
 from .forms import *
-from django.views.generic import CreateView, FormView, ListView
+from django.views.generic import CreateView, FormView, ListView,TemplateView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
@@ -71,6 +71,27 @@ class IndexView(CreateView, ListView):
 
     def get_queryset(self):
         return Posts.objects.exclude(user=self.request.user).order_by("-created_date")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["followings"] = Friends.objects.filter(follower=self.request.user)
+        return context
+
+@method_decorator(decs,name="dispatch")
+class UserIndexView(CreateView, ListView):
+    template_name = "userindex.html"
+    form_class = PostForm
+    success_url = reverse_lazy("userindex")
+    queryset = Posts.objects.all()
+    context_object_name = 'posts'
+    model=Posts
+
+    
+            
+
+    def get_queryset(self):
+        return Posts.objects.filter(user=self.request.user).order_by("-created_date")
+
 decs   
 def add_comment(request, *args, **kwargs):
         id = kwargs.get('id')
@@ -89,6 +110,48 @@ def like_post(request, *args, **kwargs):
         else:
             ps.like.add(request.user)
         return redirect("home")
+
+class AddProfileView(CreateView):
+    template_name="userindex.html"
+    form_class=ProfileForm
+    success_url=reverse_lazy("home")
+
+    def post(self,request,*args,**kw):
+        form=ProfileForm(data=request.POST,files=request.FILES)
+        if form.is_valid():
+            profile=form.save(commit=False)
+            profile.user=request.user
+            profile.save()
+            return redirect("")
+        else:
+            return render(request,"userprofile.html",{"form":form})
+
+class ViewmyProfile(TemplateView):
+    template_name="userindex.html"
+
+class ListPeopleView(ListView):
+    template_name="people/peoples.html"
+    model = User
+    context_object_name = 'people'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["followings"] = Friends.objects.filter(follower=self.request.user)
+        context["posts"] = Posts.objects.all().order_by('-created_date')
+        return context
+    
+
+    def get_queryset(self):
+        return User.objects.exclude(username=self.request.user)
+
+
+def add_follower(request, *args, **kwargs):
+    id = kwargs.get('id')
+    usr = User.objects.get(id=id)
+    if not Friends.objects.filter(user=usr, follower=request.user):
+        Friends.objects.create(user=usr, follower=request.user)
+    else:
+        Friends.objects.get(user=usr, follower=request.user).delete()
+    return redirect("people")
 
 
 def sign_out_view(request,*args,**kw):
