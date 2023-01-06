@@ -1,162 +1,177 @@
 {%extends 'base.html'%}
 {%block body_block%}
-        <!-- main-content -->
-        <div class="main-content">
+<!-- main-content -->
+<div class="main-content">
 
-            <!-- add post starts -->
-            <div class="write-post-container">
-                <div class="user-profile">
-                   <a href="{%url 'userindex'%}"><img src="https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg" alt=""></a> 
-                    <div>
-                        <p>{{user}}</p>
-                        <small>Public <i class="fa-solid fa-caret-down"></i> </small>
-                    </div>
-                </div>
-
-                <div class="post-input-container">
-                    <form action="" method="post" enctype="multipart/form-data" class="post-input-container-textarea"
-                        placeholder="What's on your mind?">
-                        {%csrf_token%}
-                        {{form.as_p}}
-                        <input type="submit" value="add post" class="btn btn-outline-success">
-                    </form>
-                    <div class="add-post-links">
-                        <a href=""><img src="/webapp/templates/images/live-video.png" alt="">Live Video</a>
-                        <a href=""><img src="/webapp/templates/images/photo.png" alt="">Photo/Video</a>
-                        <a href=""><img src="/webapp/templates/images/feeling.png" alt="">Feeling/Activity</a>
-
-
-                    </div>
-
-
-                </div>
+    <!-- add post starts -->
+    <div class="write-post-container">
+        <div class="user-profile">
+            <img src="{{request.user.profile.profile_pic.url}}"
+            alt="">
+            <h2 >{{user}}</h2>
             
-            <!-- ends -->
-            <!-- postlist -->
-                <div class="post-container">
-                    <div class="user-profile">
-                        <img src="https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg" alt="">
-                        <div>
-                            <p>{{user}}</p>
-                            <span>{{created_date}}</span>
-                        </div>
-                    </div>
-                    
-                </div>
             
-            <!-- ends -->
+                    <span>{{created_date}}</span>
+            
+            <hr>
+        </div>
 
-            <!-- list post -->
+        <div class="post-input-container">
+            
+            <div class="add-post-links">
+                <a href=""><img src="/webapp/templates/images/live-video.png" alt="">Live Video</a>
+                <a href="{%url 'addpost'%}"><img src="/webapp/templates/images/photo.png" alt="">Photo/Video</a>
+                <a href=""><img src="/webapp/templates/images/feeling.png" alt="">Feeling/Activity</a>
 
-                <div class="" >
-                    {%for p in posts%}
-                    <div class="card" style="margin-top: 20px;border: 0;">
-                        <!-- Post preview-->
-                        <div class="post-preview">
-                            
-                                <h1 class="post-title">{{p.title}}</h1>
-                            
-                            <p class="">
-                                <i class="fa-solid fa-user"></i>
-                                {{p.user}}
-                                <i class="fa-solid fa-calendar-days"></i> {{p.created_date}}
-                            </p>
-                            {%if p.image%}
-                            <div>
-                                <img src="{{p.image.url}}" alt="" class="w-100">
-                            </div>
-                            {%endif%}
-                        </div>
-                    </div>
-               
+                <hr class="my-4" />
+            </div>
 
 
-                    <!-- addlike -->
+        </div>
 
-
-                    <div class="mt-2">
-                        <a href="{%url 'like-post' p.id %}" class="btn btn-warning btn-sm"><i
-                                class="fa-regular fa-heart"></i></a>
-                        
-                        {{p.likes}} <i class="fa-solid fa-heart"></i> {{user}} & others
-                        
-                       
-                    </div>
-
-                    <hr class="my-4" />
-                    <!-- endlike -->
-                    <!-- cmnt list -->
-                   
-
-
-
-
-                    {%for cmnts in p.comment%}
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="post-meta">
-                                <div class=" fw-bold">{{cmnts.comment}}</div>
-                                <div class="fw-light"> <i class="fa-solid fa-user"></i><a href="#!"> {{p.user}}</a>
-                                 <i class="fa-solid fa-calendar-days"></i> {{p.created_date}}</div>
-                                 
-                             </p>
-                             
-                        </div>
-                        <div class="col-3">
-                        </div>
-                        <div class="col-3">
-                           <a href="#"><button class="btn btn-outline-danger" style="margin-top: 30%;margin-bottom: 10px; border-radius: 50%;">Delete</button></a> 
-                        </div>
-                    </div>
-                    {%endfor%}
-                    <!-- endlist -->
-                    <!-- cmnt -->
-                    <div>
-                        <form action="{%url 'add_comment' p.id %}" method="post">
-                            {%csrf_token%}
-                            <input type="text" placeholder="Add comment" name="comment" class="form-control">
-                            <button type="submit" class="btn btn-outline-info">Add</button>
-                        </form>
-                    </div>
-                    {%endfor%}
-                    <hr class="my-4" />
-                </div>
-                </div>
-         </div>
-
-
-
-                    <!-- end -->
-                    
-                    <!-- end list -->
-
-
+        <!-- ends -->
+        <!-- postlist -->
+        <div class="post-container">
+            <div class="user-profile">
                 
-                <!-- right-sidebar -->
-                <div class="right-sidebar">
+                <div>
                     
-
-                    
-                    <h5>Following</h5>
-                <div class="card-parent border-0 shadow-sm" style="width: 50%;">
-                    {% for f in followings %}
-                    <div class="card-child rounded-5 border-0 shadow-sm" style="width: 40%; border: 0; margin-top: 20px;margin-left: 20px;">
-                        <div class="card-body text-center">
-                            <img src="https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg"
-                                class="rounded-circle" width="80%" alt="">
-                            <small style="font-size: 0.8em; width: 100%; border: 0;">{{f.user}}</small>
-                        </div>
-                    </div>
-                    {% endfor %}
                 </div>
+            </div>
+
+        </div>
+
+        <!-- ends -->
+
+        <!-- list post -->
+
+       
+            {%for p in posts%}
+            <div class="card" style="margin-top: 20px;border: 0;">
+                <!-- Post preview-->
+                <div class="post-preview">
+
+                    <h1 class="post-title">{{p.title}}</h1>
+
+                    <p class="">
+                        <i class="fa-solid fa-user"></i>
+                        {{p.user}}
+                        <i class="fa-solid fa-calendar-days"></i> {{p.created_date}}
+                    </p>
+                    {%if p.image%}
+                    <div>
+                        <img src="{{p.image.url}}" alt="" class="w-100">
+                        
+                    </div>
+                    {%endif%}
+                </div>
+            </div>
 
 
-                </div> 
 
-            
-            <!-- ends main -->
-            
-                <!-- footer starts -->
+            <!-- addlike -->
 
-            <!--footer ends -->
-            {%endblock%}
+
+            <div class="mt-2">
+                <a href="{%url 'like-post' p.id %}" class="btn btn-warning btn-sm"><i
+                        class="fa-regular fa-heart"></i></a>
+
+                {{p.likes}} <i class="fa-solid fa-heart"></i> {{user}} & others
+
+
+            </div>
+
+            <hr class="my-4" />
+            <!-- endlike -->
+            <!-- cmnt list -->
+
+            <div class="accordion" id="accordionExample" >
+                        <div class=" accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                        style="background-color: #d8d7d7;">
+                        Comments
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        {%for cmnts in p.comment%}
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="post-meta">
+                                <div class=" fw-bold">{{cmnts.comment}}</div>
+                                <div class="fw-light"> <i class="fa-solid fa-user"></i><a href="#!"> {{request.user}}</a>
+                                    <i class="fa-solid fa-calendar-days"></i> {{p.created_date}}
+                                </div>
+
+                                </p>
+
+                            </div>
+                            <div class="col-3">
+                            </div>
+                            <div class="col-3">
+                                <a href="{%url 'comment-delete' cmnts.id%}"><button class="btn btn-outline-danger"
+                                        style="margin-top: 30%;margin-bottom: 10px; border-radius: 50%;"><i class="fa-solid fa-trash"></i></button></a>
+                            </div>
+                        </div>
+                        {%endfor%}
+                        <!-- endlist -->
+                        <!-- cmnt -->
+                        <div>
+                            <form action="{%url 'add_comment' p.id %}" method="post">
+                                {%csrf_token%}
+                                <input type="text" placeholder="Add comment" name="comment" class="form-control">
+                                <button type="submit" class="btn btn-outline-success mt-2">+</button>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+            {%endfor%}
+            <hr class="my-4" />
+     </div>
+
+    </div>
+
+
+<!-- end -->
+
+<!-- end list -->
+
+
+
+<!-- right-sidebar -->
+<div class="right-sidebar">
+
+
+
+    <h5>Following</h5>
+    <div class="card-parent border-0 shadow-sm" style="width: 50%;">
+        {% for f in followings %}
+        <div class="card-child rounded-5 border-0 shadow-sm"
+            style="width: 40%; border: 0; margin-top: 20px;margin-left: 20px;">
+            <div class="card-body text-center">
+                <img src="https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg"
+                    class="rounded-circle" width="80%" alt="">
+                <small style="font-size: 0.8em; width: 100%; border: 0;">{{f.user}}</small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+</div>
+
+
+<!-- ends main -->
+
+<!-- footer starts -->
+
+<!--footer ends -->
+{%endblock%}

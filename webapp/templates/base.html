@@ -42,10 +42,11 @@
                 <input type="text" placeholder="search">
             </div>
             <div class="nav-user-icon online">
-                <a href="{%url 'userindex'%}"><img src="https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg" alt=""></a>
+               <!-- /request.user.profile.profile_pic.url  -->
+                <a href="{%url 'userindex'%}"><img src="{{request.user.profile.profile_pic.url}}" width="100%" alt="gdxhfcg"></a>
             </div>
             <div>
-                <a class=" " href="{%url 'sign-out'%}"><button class="btn btn-danger ms-2 mb-2 "> Logout</button> </a>
+                <a class=" " href="{%url 'sign-out'%}"><button class="btn btn-danger ms-2 mb-2 "> <i class="fa-solid fa-right-from-bracket"></i></button> </a>
             </div>
         </div>
   

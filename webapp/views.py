@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from api.models import *
 from .forms import *
-from django.views.generic import CreateView, FormView, ListView,TemplateView
+from django.views.generic import CreateView, FormView, ListView,TemplateView,UpdateView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
@@ -51,7 +51,7 @@ class LoginView(FormView):
                 return render(request, "login.html", {'form':form})
 
 @method_decorator(decs,name="dispatch")
-class IndexView(CreateView, ListView):
+class IndexView( ListView):
     template_name = "index.html"
     form_class = PostForm
     success_url = reverse_lazy("home")
@@ -76,6 +76,19 @@ class IndexView(CreateView, ListView):
         context = super().get_context_data(**kwargs)
         context["followings"] = Friends.objects.filter(follower=self.request.user)
         return context
+
+@method_decorator(decs,name="dispatch")
+class PostFormView(CreateView):
+    template_name="add-post.html"
+    form_class=PostForm
+    success_url=reverse_lazy("home")
+    model=Posts
+
+    def form_valid(self, form):
+        form.instance.user=self.request.user
+        return super().form_valid(form)
+
+
 
 @method_decorator(decs,name="dispatch")
 class UserIndexView(CreateView, ListView):
@@ -114,7 +127,7 @@ def like_post(request, *args, **kwargs):
 
 @method_decorator(decs,name="dispatch")
 class AddProfileView(CreateView):
-    template_name="userindex.html"
+    template_name="userprofile.html"
     form_class=ProfileForm
     success_url=reverse_lazy("home")
 
@@ -124,13 +137,21 @@ class AddProfileView(CreateView):
             profile=form.save(commit=False)
             profile.user=request.user
             profile.save()
-            return redirect("")
+            return redirect("home")
         else:
             return render(request,"userprofile.html",{"form":form})
 
 @method_decorator(decs,name="dispatch")
 class ViewmyProfile(TemplateView):
     template_name="userindex.html"
+    
+@method_decorator(decs,name="dispatch")
+class EditProfileView(UpdateView):
+    template_name="profile.html"
+    form_class=ProfileForm
+    model=UserProfile
+    pk_url_kwargs="id"
+    success_url=reverse_lazy("userindex")
 
 
 @method_decorator(decs,name="dispatch")
@@ -164,6 +185,13 @@ def comment_delete(request,*args,**kw):
     id=kw.get("id")
     Comments.objects.get(id=id).delete()
     return redirect("home")
+
+decs
+def post_delete(request,*args,**kw):
+    id=kw.get("id")
+    Posts.objects.get(id=id).delete()
+    return redirect("home")
+
 
 def sign_out_view(request,*args,**kw):
     logout(request)

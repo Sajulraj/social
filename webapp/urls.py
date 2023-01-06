@@ -13,4 +13,7 @@ urlpatterns = [
     path("user/<int:id>/follower/add", add_follower, name="add-follower"),
     path("people/", ListPeopleView.as_view(), name="people"),
     path("comment/<int:id>/remove",comment_delete,name="comment-delete"),
+    path("post/<int:id>/remove",post_delete,name="post-delete"),
+    path("users/profile/<int:id>/change",EditProfileView.as_view(),name="edit-profile"),
+     path("add/post",PostFormView.as_view(),name="addpost"),
 ]
