@@ -76,7 +76,7 @@
                 <a href="{%url 'like-post' p.id %}" class="btn btn-warning btn-sm"><i
                         class="fa-regular fa-heart"></i></a>
 
-                {{p.likes}} <i class="fa-solid fa-heart"></i> {{user}} & others
+                {{p.likes}} <i class="fa-solid fa-heart"></i> {{p.user}} & others
 
 
             </div>
@@ -102,7 +102,7 @@
                             <div class="col-6">
                                 <p class="post-meta">
                                 <div class=" fw-bold">{{cmnts.comment}}</div>
-                                <div class="fw-light"> <i class="fa-solid fa-user"></i><a href="#!"> {{request.user}}</a>
+                                <div class="fw-light"> <i class="fa-solid fa-user"></i><a href="#!"> {{cmnts.user}}</a>
                                     <i class="fa-solid fa-calendar-days"></i> {{p.created_date}}
                                 </div>
 
